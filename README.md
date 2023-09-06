@@ -2,17 +2,16 @@
 Credit goes to Eric Capuano for writing ["So you want to be a SOC Analyst?"](https://blog.ecapuano.com/p/so-you-want-to-be-a-soc-analyst-intro) and putting together this lab!
 ### Summary
 
-### Learning Objectives
-- Configure and deploy Virtual Machines
+### Learning Objective
 - Hands-on experience with EDR (Endpoint Detection and Response) and C2s (Command and Control)
-- 
+
 ### Tools & Requirements
-- VirtualBox or VMWare
-- Windows VM
-- Linux VM
-- Sysmon
-- LimaCharlie
-- Sliver
+1. VirtualBox or VMWare
+2. Windows VM
+3. Linux VM
+4. Sysmon
+5. LimaCharlie
+6. Sliver
 
 ## Step 1: Set up a Windows/Linux Server VM
 1. Install VirtualBox
@@ -57,6 +56,56 @@ Credit goes to Eric Capuano for writing ["So you want to be a SOC Analyst?"](htt
 ![hash analysis](images/hashanalysis.png)
 ![virus total](images/virustotal.png)
 This virus did not show up in VirusTotal because VT has never seen the file! Eric Capuano states "This actually makes a file even more suspicious because nearly everything has been seen by VirusTotal".
+
+## Step 9: Stealing credentials with Sliver
+1. In Sliver (still connected to the http listener session) run the command ``procdump -n lsass.exe -s lsass.dmp``
+![procdump](images/procump.png)
+
+## Step 10: Detecting the stolen creds with LimaCharlie
+1. Look at the timeline of the Windows VM sensor and filter for "SENSITIVE_PROCESS_ACCESS". This will show the event where lsass was accessed.
+![Alt text](images/sensitiveaccess.png)
+![lsassevent](images/lsassevent.png)
+2. Create a D&R(Detection & Response) rule that will alert anytime this event occurs. This rule specifies that the detection will only look at SENSITIVE_PROGRESS_ACCESS where the process ends with lsass.exe. The response section generates a detection report with the name LSASS access.
+![d&rbutton](images/d&rbutton.png)
+![d&rrule](images/d&rrule.png)
+3. Test the new rul LSASS rule
+![Alt text](images/lsassruletest.png)
+4. Save the rule as LSASS Accessed
+![Alt text](images/lsasssaved.png)
+
+## Step 11: Detect LSASS Accessed
+1. Run the procdump command again
+2. Look in the "Detections" tab of LimaCharlie. As you can see, our new rule worked, and the event is captured!
+![Alt text](images/detections.png)
+
+## Step 12: Perform a ransomware attack! (Kinda)
+1. As Eric Capuano states in his post "Volume Shadow Copies provide a convenient way to restore individual files or even an entire file system to a previous state which makes it a very attractive option for recovering from a ransomware attack". So as an attacker we are deleting the copies so there is no way to recover from the ransomware attack.
+2. Run the ``shell`` command
+![Alt text](images/shell.png)
+3. Run the ``vssadmin delete shadows /all`` command
+![Alt text](images/vssadmindelete.png)
+4. Run ``whoami``
+![Alt text](images/whoami.png)
+
+## Step 13 Detect and Block the Attack
+1. Look in the Detections tab of LimaCharlie
+![Alt text](images/detectattack.png)
+2. Make a new D&R rule for Shadow Copies Deletion. The action:report tells LimaCharlie to create a Detection report and the action:task is what will be used to block the attack by killing the parent process of the `vssadmin delete shadows /all` command.
+![Alt text](images/d&rshadowcopies.png)
+1. Run the `vssadmin delete shadows /all` command again and run `whoami`. Whoami didnt return anything because the D&R rule worked successfully. The rule terminated the parent process of `vssadmin delete shadows /all` making the shell hang and `whoami` not returning anything.
+![Alt text](images/attackblocked.png)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
