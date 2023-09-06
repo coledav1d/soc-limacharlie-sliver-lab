@@ -1,7 +1,5 @@
 # SOC LimaCharlie Sliver Lab
 Credit goes to Eric Capuano for writing ["So you want to be a SOC Analyst?"](https://blog.ecapuano.com/p/so-you-want-to-be-a-soc-analyst-intro) and putting together this lab!
-### Summary
-
 ### Learning Objective
 - Hands-on experience with EDR (Endpoint Detection and Response) and C2s (Command and Control)
 
