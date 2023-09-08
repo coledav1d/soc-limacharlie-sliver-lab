@@ -25,7 +25,7 @@ Credit goes to Eric Capuano for writing ["So you want to be a SOC Analyst?"](htt
 ![Turning off antivirus](images/turn-off-antivirus.png)
 
 ## Step 3: Installing Sysmon (Windows VM)
-1. Download and install Sysmon to provide granular telemtry on Windows Endpoints.
+1. Download and install Sysmon to provide granular telemetry on Windows Endpoints.
 2. Download and install [SwiftOnSecurity](https://infosec.exchange/@SwiftOnSecurity) Sysmon config
 3. Validate Symon is running
 ![sysmon](images/sysmon.png)
