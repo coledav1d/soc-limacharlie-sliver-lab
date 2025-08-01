@@ -1,3 +1,5 @@
+DISCLAIMER - This project is for educational use only. No real payloads or malicious activity is involved.
+
 # SOC LimaCharlie Sliver Lab
 Credit goes to Eric Capuano for writing ["So you want to be a SOC Analyst?"](https://blog.ecapuano.com/p/so-you-want-to-be-a-soc-analyst-intro) and putting together this lab!
 ### Learning Objective
